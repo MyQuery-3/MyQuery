@@ -40,3 +40,7 @@ cd server
 pip install -r ../grader/requirements.txt
 python -m uvicorn main:app --reload --port 8888
 ```
+## Service Run
+- grader port 8787
+- website client 3000
+- websit servee 8888

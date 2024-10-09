@@ -7,7 +7,7 @@ export default function Page(){
 
     const landingData = {
         th : {
-            description : "My Query คือเว็บไซต์สำหรับการเรียนรู้ Query Language ของ MYSQL โดยได้รับแรงบัลดาลใจจาก DB Learn Application ของคณะเทคโนโลยีสารสนเทศ สถาบันเทคโนโลยีพระจอมเกล้าเจ้าคุณทหารลาดกระบัง"
+            description : "My Query คือเว็บไซต์สำหรับการเรียนรู้ Query Language ของ MYSQL โดยได้รับแรงบัลดาลใจจาก DB Learn Web Application ของคณะเทคโนโลยีสารสนเทศ สถาบันเทคโนโลยีพระจอมเกล้าเจ้าคุณทหารลาดกระบัง"
         }
     }
 

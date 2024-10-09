@@ -1,90 +1,43 @@
-export default function Page() {
-  return (
-    <div></div>
-  )
-}
+"use client";
+import React from "react";
+import Editor from "@monaco-editor/react";
+import { useRef } from "react";
+import { Button } from "@/components/ui/button";
 
-// export default function page() {
-//     return (
-//       <main className="">
-//         <div className=" grid grid-flow-col">
-//           <div>
-//             <div className="m-5 mx-[100px] p-2 min-h-[300px] rounded-md bg-[#cbcbcb]">
-//               <textarea className="w-full min-h-[300px] p-5 text-lg rounded-md" />
-//             </div>
-//             <div id="result" className=" bg-[#cbcbcb] rounded-md m-10">
-//               <p className="text-2xl font-bold ml-3 mt-3">Database</p>
-//               <div className="p-10">
-//                 <table className="min-w-full text-left text-sm whitespace-nowrap">
-//                   <thead className="uppercase tracking-wider border-b-2 dark:border-neutral-600">
-//                     <tr>
-//                       <th scope="col" className="px-6 py-4">
-//                         Product
-//                       </th>
-//                       <th scope="col" className="px-6 py-4">
-//                         Price
-//                       </th>
-//                       <th scope="col" className="px-6 py-4">
-//                         Stock
-//                       </th>
-//                       <th scope="col" className="px-6 py-4">
-//                         Status
-//                       </th>
-//                     </tr>
-//                   </thead>
-//                   <tbody>
-//                     <tr className="border-b dark:border-neutral-600">
-//                       <th scope="row" className="px-6 py-4">
-//                         Handbag
-//                       </th>
-//                       <td className="px-6 py-4">$129.99</td>
-//                       <td className="px-6 py-4">30</td>
-//                       <td className="px-6 py-4">In Stock</td>
-//                     </tr>
-//                     <tr className="border-b dark:border-neutral-600">
-//                       <th scope="row" className="px-6 py-4">
-//                         Shoes
-//                       </th>
-//                       <td className="px-6 py-4">$89.50</td>
-//                       <td className="px-6 py-4">25</td>
-//                       <td className="px-6 py-4">In Stock</td>
-//                     </tr>
-  
-//                     <tr className="border-b dark:border-neutral-600">
-//                       <th scope="row" className="px-6 py-4">
-//                         Bedding Set
-//                       </th>
-//                       <td className="px-6 py-4">$69.99</td>
-//                       <td className="px-6 py-4">40</td>
-//                       <td className="px-6 py-4">In Stock</td>
-//                     </tr>
-//                     <tr className="border-b dark:border-neutral-600">
-//                       <th scope="row" className="px-6 py-4">
-//                         Dining Table
-//                       </th>
-//                       <td className="px-6 py-4">$449.99</td>
-//                       <td className="px-6 py-4">5</td>
-//                       <td className="px-6 py-4">In Stock</td>
-//                     </tr>
-//                     <tr className="border-b dark:border-neutral-600">
-//                       <th scope="row" className="px-6 py-4">
-//                         Soap Set
-//                       </th>
-//                       <td className="px-6 py-4">$24.95</td>
-//                       <td className="px-6 py-4">50</td>
-//                       <td className="px-6 py-4">In Stock</td>
-//                     </tr>
-//                   </tbody>
-//                 </table>
-//               </div>
-//             </div>
-//           </div>
-  
-//           <div className="bg-[#cbcbcb] my-10 mr-10 rounded-md">
-//             <p className=" text-center mt-3 text-2xl font-blod">SETTING</p>
-//           </div>
-//         </div>
-//       </main>
-//     );
-//   }
-  
+export default function page() {
+  const editorRef = useRef(null);
+  const handleEdotorDidMount = (editor: any, monaco: any) => {
+    editorRef.current = editor;
+  };
+  const handleExecute = () => {
+    const code = editorRef.current.getValue();
+    console.log(code);
+  };
+  return (
+    <main className="max-w-screen w-full min-h-screen bg-black px-10 py-2">
+      <div className="container mx-auto flex gap-6">
+      <div className="w-3/4 space-y-6">
+        <div className="bg-white p-6 rounded-xl">
+        <Editor
+          height="40vh"
+          defaultLanguage="sql"
+          defaultValue="SELECT * FROM table"
+          options={{ fontSize: 18 }}
+          onMount={handleEdotorDidMount}
+        />
+        <div className="flex justify-end gap-x-6">
+          <Button onClick={handleExecute}>Execute</Button>
+          <Button variant="outline" onClick={handleExecute}>Reset</Button>
+        </div>
+        </div>
+        <div className="bg-white p-6 rounded-xl h-[40vh]">
+        หน้าสำหรับแสดงผลลัพธ์ของการ Query
+        </div>
+      </div>
+      <div className="bg-white p-6 rounded-xl w-1/4">
+        หน้าสำหรับการแสดงDbต่างๆที่เลือกได้
+      </div>
+      </div>
+    </main>
+  );
+}

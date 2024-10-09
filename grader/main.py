@@ -1,36 +1,37 @@
-"""I am Grader for MyQuery"""
-from fastapi import FastAPI
-import sqlite3
+'''Grader for my query app'''
 import uvicorn
+from fastapi import FastAPI
 from pydantic import BaseModel
-import uuid
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
+# CORS settings
+origins = [
+    "http://localhost:3000",
+    "http://localhost:8787",
+]
+# Middleware for CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True, 
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-async def create_temp_table():
-    conn = sqlite3.connect("myquery.db")
-    table_name = f"temp_{uuid.uuid4()}"
-    print(f"Creating table {table_name}")
-    cursor = conn.cursor()
-    cursor.execute(f"CREATE TABLE {table_name}")
-    print(f"Created table {table_name}")
-    return conn, table_name, cursor
-
-
+# Base model for the query
+class Query(BaseModel):
+    query: str
+    
 @app.get("/")
-async def getStatus():
-    return {"status": "ready"}
+async def root():
+    return {"status": "Ready"}
 
+@app.post("/grader/execute")
+async def execute(query: Query):
+    print(query.query)
+    return {"result": query.query}
 
-@app.post("/grade")
-async def grade():
-    try:
-        conn, table_name, cursor = await create_temp_table()
-        return {"status": "success", "table_name": table_name}
-    except Exception as e:
-        print(e)
-        return {"status": "error", "message": str(e)}
-
-
-uvicorn.run(app, host="0.0.0.0", port=8787)
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="0.0.0.0", port=8787, reload=True)

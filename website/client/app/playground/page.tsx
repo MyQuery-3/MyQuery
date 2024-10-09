@@ -13,7 +13,9 @@ export default function page() {
   const handleExecute = async () => {
     try {
       const code = editorRef.current.getValue();
-      await axios.post("http://localhost:8787/grader/execute", { query: code });
+      await axios.post(`${process.env.NEXT_PUBLIC_GRADER_API_URL}/execute`, {
+        query: code,
+      });
     } catch (error) {
       console.error("Error executing query:", error);
     }

@@ -33,5 +33,9 @@ async def execute(query: Query):
     print(query.query)
     return {"result": query.query}
 
+@app.post("/grader/history")
+async def history():
+    return {"result": "route for history"}
+
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8787, reload=True)

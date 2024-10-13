@@ -3,6 +3,7 @@ import uvicorn
 from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
+import sqlite3
 
 app = FastAPI()
 
@@ -21,17 +22,19 @@ app.add_middleware(
 )
 
 # Base model for the query
-class Query(BaseModel):
+class Ececute(BaseModel):
+    databseName : str
+    tableName : str
     query: str
-    
+
 @app.get("/")
 async def root():
     return {"status": "Ready"}
 
 @app.post("/grader/execute")
-async def execute(query: Query):
-    print(query.query)
-    return {"result": query.query}
+async def execute(exexute: Ececute):
+    print(exexute.query)
+    return {"result": exexute.query}
 
 @app.post("/grader/history")
 async def history():

@@ -1,21 +1,41 @@
-"use client";
+import Link from "next/link"
+import Image from "next/image"
+import Playground from "@/public/images/landing/playground.webp"
+import "./landing.css";
+import { BugPlay , GraduationCap } from "lucide-react"
 
-import Link from "next/link";
-import "./style.css";
-import { Button } from "@/components/ui/button";
+export default function Page(){
 
-export default function Home() {
-  return (
-    <main className="">
-      <div className="flex flex-col space-y-2 items-center justify-center content-center min-h-screen">
-        <p className="text-[#E35205] text-[5rem] text-center font-bold scale-up-center max-[470px]:text-[3rem] ">
-          Query Mind
-        </p>
-        <Button asChild size={"lg"} variant={"default"}>
-          <Link href={"/playground"}>Start Learning</Link>
-        </Button>
-      </div>
-      <div className=" absolute rounded-full w-5 h-5 bg-slate-600 top-[50%] left-[50%] scale-up-fade"></div>
-    </main>
-  );
+    const landingData = {
+        th : {
+            description : "My Query คือเว็บไซต์สำหรับการเรียนรู้ Query Language ของ MYSQL โดยได้รับแรงบัลดาลใจจาก DB Learn Web Application ของคณะเทคโนโลยีสารสนเทศ สถาบันเทคโนโลยีพระจอมเกล้าเจ้าคุณทหารลาดกระบัง"
+        }
+    }
+
+    return (
+        <>
+        <div className="w-full h-screen max-h-screen overflow-hidden pt-36">
+            <div className="max-w-7xl mx-auto p-4 lg:p-0">
+                <h1 className="text-center text-5xl md:text-7xl font-bold mb-6">
+                    MY
+                    <span className="text-primary">&lt;Query/&gt;</span>
+                </h1>
+                <div className="max-w-3xl mx-auto mb-16">
+                    <p className="text-center text-foreground/60 mb-6">
+                        {landingData.th.description}
+                    </p>
+                    <div className="flex gap-4 justify-center items-center flex-wrap">
+                        <Link href={"/playground"} className="flex items-center gap-1 py-2 px-6 bg-primary hover:bg-primary/80 rounded-full font-bold text-white"> <BugPlay /> Try Playground</Link>
+                        <div className="flex items-center gap-1 py-2 px-6 bg-primary/40 cursor-not-allowed rounded-full font-bold text-white"><GraduationCap />Enter Course</div>
+                    </div>
+                </div>
+            </div>
+            <div className="bg-gradient-to-b from-background to-primary/50 pb-28 p-4 lg:p-0">
+                <div className="max-w-4xl mx-auto relative">
+                    <Image src={Playground} alt="ตัวอย่าง Playground | MyQuery" className="rounded-xl img-shadow" />
+                </div>
+            </div>
+        </div>
+        </>
+    )
 }

@@ -1,0 +1,9 @@
+fastapi[standard]
+uvicorn
+db-sqlite3
+pydantic
+sqlalchemy
+databases
+python-dotenv
+authlib
+itsdangerous

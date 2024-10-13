@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 import uvicorn
 from starlette.requests import Request
+from fastapi.middleware.cors import CORSMiddleware
 
 from authlib.integrations.starlette_client import OAuth
 from starlette.config import Config
@@ -13,6 +14,19 @@ from starlette.middleware.sessions import SessionMiddleware
 load_dotenv()
 app = FastAPI()
 app.add_middleware(SessionMiddleware, secret_key=os.environ.get("SECRET_KEY"))
+
+origins = [
+    "http://localhost:3000",
+    "http://localhost:8888",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True, 
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 config = Config(".env")
 oauth = OAuth(config)
@@ -38,6 +52,7 @@ async def auth(request: Request):
         user = token.get("userinfo")
         if user:
             request.session["user"] = user
+            print(user)
             return {"message": "login success"}
     except Exception as e:
         return {"error": str(e)}

@@ -3,11 +3,15 @@ import { ReactNode , createContext , useState , Dispatch , SetStateAction, useEf
 interface ThemeContextType {
     isDark : boolean
     setIsDark : Dispatch<SetStateAction<boolean>>
+    isMenuOpen : boolean
+    setIsMenuOpen : Dispatch<SetStateAction<boolean>>
 }
 
 const themeContext = createContext<ThemeContextType>({
     isDark : true,
-    setIsDark : () => {}
+    setIsDark : () => {},
+    isMenuOpen : false,
+    setIsMenuOpen : () => {}
 })
 
 function ThemeProvider({children} : {children : ReactNode}){
@@ -18,9 +22,10 @@ function ThemeProvider({children} : {children : ReactNode}){
         
     },[isDark])
 
+    const [ isMenuOpen , setIsMenuOpen ] = useState<boolean>(false)
 
     return (
-        <themeContext.Provider value={{ isDark , setIsDark }}>
+        <themeContext.Provider value={{ isDark , setIsDark , isMenuOpen , setIsMenuOpen }}>
             {children}
         </themeContext.Provider>
     )

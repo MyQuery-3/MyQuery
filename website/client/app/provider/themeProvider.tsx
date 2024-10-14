@@ -17,11 +17,6 @@ const themeContext = createContext<ThemeContextType>({
 function ThemeProvider({children} : {children : ReactNode}){
 
     const [ isDark , setIsDark ] = useState<boolean>(true)
-    useEffect(() => {
-        console.log(isDark);
-        
-    },[isDark])
-
     const [ isMenuOpen , setIsMenuOpen ] = useState<boolean>(false)
 
     return (

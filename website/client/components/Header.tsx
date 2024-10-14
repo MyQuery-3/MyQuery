@@ -53,7 +53,7 @@ function MobileNavigation() {
                 <NavItem href="/" disable>บทเรียน</NavItem>
                 <NavItem href="/playground">Playground</NavItem>
                 <NavItem href="/" disable>วิธีใช้งาน</NavItem>
-                <Link href={"/login"}>เข้าสู่ระบบ</Link>
+                <Link className="bg-primary text-white text-xl px-4 py-2 rounded-md font-bold" href={"/login"}>เข้าสู่ระบบ</Link>
             </div>
         </div>
     )

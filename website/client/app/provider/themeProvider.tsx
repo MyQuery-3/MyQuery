@@ -1,4 +1,5 @@
 import { ReactNode , createContext , useState , Dispatch , SetStateAction, useEffect } from "react";
+import { useParams } from "next/navigation";
 
 interface ThemeContextType {
     isDark : boolean
@@ -16,8 +17,13 @@ const themeContext = createContext<ThemeContextType>({
 
 function ThemeProvider({children} : {children : ReactNode}){
 
+    const param = useParams()
     const [ isDark , setIsDark ] = useState<boolean>(true)
     const [ isMenuOpen , setIsMenuOpen ] = useState<boolean>(false)
+
+    useEffect(() => {
+        setIsMenuOpen(false)    
+    },[param])
 
     return (
         <themeContext.Provider value={{ isDark , setIsDark , isMenuOpen , setIsMenuOpen }}>

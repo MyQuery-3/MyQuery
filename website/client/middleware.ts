@@ -10,7 +10,8 @@ export function middleware() {
     }
     return NextResponse.next();
   } catch (error) {
-    return NextResponse.redirect("http://localhost:3000/auth/login");
+    return NextResponse.next();
+    // return NextResponse.redirect("http://localhost:3000/auth/login");
   }
 }
 

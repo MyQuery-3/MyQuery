@@ -1,9 +1,12 @@
 '''Grader for my query app'''
+import os
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
-import sqlite3
+
+from sqlalchemy import create_engine, text
+from sqlalchemy.exc import SQLAlchemyError
 
 app = FastAPI()
 
@@ -21,24 +24,35 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Base model for the query
-class Ececute(BaseModel):
-    databseName : str
-    tableName : str
+engine = create_engine("sqlite:///./myquery.db")
+
+# Pydantic model for SQL query
+class SQLQuery(BaseModel):
     query: str
+    
+def execute_query(query: str):
+    try:
+        with engine.connect() as connection:
+            result = connection.execute(text(query))
+            if result.returns_rows:
+                result_list = [dict(row) for row in result.mappings()]
+                return result_list
+            else:
+                return {"message": "Query executed successfully"}
+    except SQLAlchemyError as e:
+        raise HTTPException(status_code=400, detail=f"SQL Error: {str(e)}")
 
 @app.get("/")
 async def root():
     return {"status": "Ready"}
 
-@app.post("/grader/execute")
-async def execute(exexute: Ececute):
-    print(exexute.query)
-    return {"result": exexute.query}
-
-@app.post("/grader/history")
-async def history():
-    return {"result": "route for history"}
+@app.post("/api/execute")
+async def execute(sql_query: SQLQuery):
+    try:
+        result = execute_query(sql_query.query)
+        return {"result": result}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8787, reload=True)
+    uvicorn.run("main:app", host="localhost", port=8787, reload=True)

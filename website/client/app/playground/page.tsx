@@ -43,14 +43,18 @@ export default function page() {
   const handleQuery = async () => {
     try {
       const query = getIDEValue();
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/execute`,
-        {
-          query,
-        }
-      );
-      setResult(response.data.result);
-      console.log(result);
+      if (process.env.NEXT_PUBLIC_SERVER_URL != undefined) {
+        const response = await axios.post(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/execute`,
+          {
+            query,
+          }
+        );
+        setResult(response.data.result);
+        console.log(result);
+      } else {
+        console.log("No Grader Found!")
+      }
     } catch (error) {
       console.log(error);
     }

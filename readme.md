@@ -39,6 +39,8 @@ bun dev
 cd server
 pip install -r ../grader/requirements.txt
 python -m uvicorn main:app --reload --port 8888
+or 
+python -m grader.main
 ```
 ## Service Run
 - grader port 8787

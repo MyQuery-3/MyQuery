@@ -43,9 +43,9 @@ export default function page() {
   const handleQuery = async () => {
     try {
       const query = getIDEValue();
-      if (process.env.NEXT_PUBLIC_SERVER_URL != undefined) {
+      if (process.env.NEXT_PUBLIC_GRADER_API_URL != undefined) {
         const response = await axios.post(
-          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/execute`,
+          `${process.env.NEXT_PUBLIC_GRADER_API_URL}/api/execute`,
           {
             query,
           }

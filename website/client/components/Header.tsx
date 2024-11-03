@@ -10,7 +10,7 @@ export default function Header() {
     return (
     <>  
         {isMenuOpen && (<MobileNavigation />)}
-        <header className="bg-primary/20 w-full p-4 sm:px-10 fixed top-0 left-0 backdrop-blur-2xl items-center flex justify-between">
+        <header className="bg-white shadow-sm shadow-primary w-full h-[60px] p-4 sm:px-10 fixed top-0 left-0 backdrop-blur-2xl items-center flex justify-between z-50">
             
             <Link href={`/`} className="font-bold text-2xl text-foreground">MY
                 <span className="text-primary">&lt;Query/&gt;</span>

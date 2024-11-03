@@ -33,8 +33,8 @@ export default function Page(){
                 </div>
             </div>
             <div className="bg-gradient-to-b from-background to-primary/50 pb-28 p-4 lg:p-0">
-                <div className="max-w-4xl mx-auto relative">
-                    <Image src={Playground} alt="ตัวอย่าง Playground | MyQuery" className="rounded-xl img-shadow" />
+                <div className="max-w-4xl mx-auto relative mb-[50px]">
+                    <Image src={Playground} alt="ตัวอย่าง Playground | MyQuery" className="rounded-lg img-shadow" />
                 </div>
             </div>
         </div>

@@ -29,7 +29,7 @@ engine = create_engine("sqlite:///./myquery.db")
 # Pydantic model for SQL query
 class SQLQuery(BaseModel):
     query: str
-    
+
 def execute_query(query: str):
     try:
         with engine.connect() as connection:

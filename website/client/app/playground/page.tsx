@@ -53,7 +53,7 @@ export default function page() {
         setResult(response.data.result);
         console.log(result);
       } else {
-        console.log("No Grader Found!")
+        console.error("No Grader Found!")
       }
     } catch (error) {
       console.log(error);

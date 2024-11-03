@@ -40,6 +40,7 @@ def execute_query(query: str):
             else:
                 return {"message": "Query executed successfully"}
     except SQLAlchemyError as e:
+        print(f"SQL Error: {str(e)}")
         raise HTTPException(status_code=400, detail=f"SQL Error: {str(e)}")
 
 @app.get("/")

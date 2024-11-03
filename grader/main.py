@@ -1,5 +1,4 @@
 '''Grader for my query app'''
-import os
 import uvicorn
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
@@ -24,7 +23,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-engine = create_engine("sqlite:///./myquery.db")
+engine = create_engine("sqlite:///grader/myquery.db")
 
 # Pydantic model for SQL query
 class SQLQuery(BaseModel):

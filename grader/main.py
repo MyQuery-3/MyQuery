@@ -5,7 +5,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 
-from sqlalchemy import create_engine, text
+from .database import engine
 from sqlalchemy.exc import SQLAlchemyError
 
 app = FastAPI()
@@ -24,8 +24,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-engine = create_engine("sqlite:///./myquery.db")
-
 # Pydantic model for SQL query
 class SQLQuery(BaseModel):
     query: str
@@ -33,7 +31,7 @@ class SQLQuery(BaseModel):
 def execute_query(query: str):
     try:
         with engine.connect() as connection:
-            result = connection.execute(text(query))
+            result = connection.execute(query)
             if result.returns_rows:
                 result_list = [dict(row) for row in result.mappings()]
                 return result_list

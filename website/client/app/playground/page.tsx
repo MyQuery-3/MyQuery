@@ -50,8 +50,10 @@ export default function page() {
             query,
           }
         );
-        setResult(response.data.result);
-        console.log(result);
+         if (!response.data.result.message) {
+           setResult(response.data.result);
+           console.log(result);
+         }
       } else {
         console.log("No Grader Found!")
       }

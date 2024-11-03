@@ -18,7 +18,7 @@ const themeContext = createContext<ThemeContextType>({
 function ThemeProvider({children} : {children : ReactNode}){
 
     const param = useParams()
-    const [ isDark , setIsDark ] = useState<boolean>(true)
+    const [ isDark , setIsDark ] = useState<boolean>(false)
     const [ isMenuOpen , setIsMenuOpen ] = useState<boolean>(false)
 
     useEffect(() => {

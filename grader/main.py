@@ -27,7 +27,7 @@ app.add_middleware(
 # Pydantic model for SQL query
 class SQLQuery(BaseModel):
     query: str
-
+    
 def execute_query(query: str):
     try:
         with engine.connect() as connection:

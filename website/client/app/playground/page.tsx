@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useContext, use } from "react";
 import { themeContext } from "../provider/themeProvider";
 import Editor, { OnMount } from "@monaco-editor/react";
-import { Box, Play } from "lucide-react";
+import { Box, Play, RefreshCw } from "lucide-react";
 import axios from "axios";
 import DataTable, { TableColumn } from "react-data-table-component";
 
@@ -96,12 +96,17 @@ export default function page() {
             />
           </div>
         </div>
-        <div>
+        <div className="flex flex-row space-x-3">
           <button
             onClick={handleQuery}
             className="flex items-center gap-2 bg-primary py-2 px-4 rounded-md font-bold text-lg hover:scale-95 transition"
           >
             <Play /> Query
+          </button>
+          <button
+            className="flex items-center gap-2 bg-primary py-2 px-4 rounded-md font-bold text-lg hover:scale-95 transition"
+          >
+            <RefreshCw /> Query
           </button>
         </div>
         <div className="mt-4">

@@ -162,9 +162,9 @@ export default function Page() {
             <p className="flex font-bold text-xl"><Table />  Gobal Query</p>
             <div className="grid h-[600px] w-[300px] border border-border hover:border-primary rounded-md p-3 space-x-1 space-y-1 overflow-scroll overflow-x-hidden">
               {tables.map((table, index) => (
-                <button key={index} onClick={() => handleSelectDB(table)} className="flex flex-col border border-border justify-center items-center rounded-sm min-h-[70px] hover:text-secondary hover:bg-primary">
+                <button key={index} onClick={() => handleSelectDB(table)} className="flex flex-col border border-border justify-center items-center rounded-sm min-h-[70px] w-full hover:text-secondary hover:bg-primary">
                   <Database />
-                  <p className="truncate w-full overflow-hidden whitespace-nowrap text-ellipsis text-center">{table}</p>
+                  <p className="truncate w-[200px] overflow-hidden whitespace-nowrap text-ellipsis text-center">{table}</p>
                 </button>
               ))}
             </div>

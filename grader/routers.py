@@ -15,3 +15,11 @@ async def execute(sql_query: SQLQuery):
         return {"result": result}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+@router.post("/api/get")
+async def execute():
+    try:
+        result = execute_query("SELECT name FROM sqlite_master WHERE type='table'")
+        return {"result": result}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))

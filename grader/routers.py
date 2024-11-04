@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from .models import SQLQuery
+from .models import DBName, SQLQuery
 from .utils import execute_query
 
 router = APIRouter()
@@ -23,3 +23,12 @@ async def execute():
         return {"result": result}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+@router.post("/api/execute_click")
+async def execute(dbName: DBName):
+    try:
+        result = execute_query(f'SELECT * FROM {dbName.dbName}')
+        return {"result": result}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+

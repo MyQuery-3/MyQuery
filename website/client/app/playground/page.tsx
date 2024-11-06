@@ -34,7 +34,7 @@ export default function Page() {
   };
 
   function getIDEValue() {
-    return editorRef.current ? editorRef.current.getValue() : "";
+    return editorRef.current ? editorRef.current?.getValue() : "";
   }
 
   const handleSelectDB = async (dbName: string) => {

@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "concurrently \"next dev\" \"cd ../../ && python -m grader.main\"",
-    "build": "concurrently \"next dev\" \"cd ../../ && python -m grader.main\"",
-    "start": "next start",
+    "build": "concurrently \"next build\"",
+    "start": "concurrently \"next start\" \"cd ../../ && python -m grader.main\"",
     "lint": "next lint"
   },
   "dependencies": {
@@ -25,11 +25,13 @@
     "react-data-table-component": "^7.6.2",
     "react-dom": "^18",
     "react-icons": "^5.3.0",
+    "sharp": "^0.33.5",
     "styled-components": "^6.1.13",
     "sweetalert2": "^11.14.5",
     "swr": "^2.2.5",
     "tailwind-merge": "^2.5.3",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "wrap-ansi": "^9.0.0"
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.7",

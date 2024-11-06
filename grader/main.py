@@ -1,30 +1,26 @@
 import uvicorn
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+# from fastapi.middleware.cors import CORSMiddleware
 from .routers import router
+from starlette.middleware.cors import CORSMiddleware
+from starlette.middleware import Middleware
 
-app = FastAPI()
+# ตั้งค่า origins
+origins = ["*"]
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=['*']
-)
+# ตั้งค่า middleware CORS
+middleware = [
+    Middleware(
+        CORSMiddleware,
+        allow_origins=origins,            # อนุญาตทุก origin
+        allow_credentials=True,           # อนุญาตการส่ง cookies หรือ credentials
+        allow_methods=["*"],              # อนุญาตทุก HTTP method เช่น GET, POST, PUT
+        allow_headers=["*"],              # อนุญาตทุก HTTP header
+    )
+]
 
-
-# # CORS settings
-# origins = [
-#     "http://localhost:3000",
-#     "http://localhost:8787",
-# ]
-
-# # Middleware สำหรับ CORS
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=["*"],
-#     allow_credentials=True,
-#     allow_methods=["*"],
-#     allow_headers=["*"],
-# )
+# กำหนด middleware ให้กับ FastAPI
+app = FastAPI(middleware=middleware)
 
 # รวม router เข้ากับแอป
 app.include_router(router)

@@ -73,7 +73,7 @@ export default function Page() {
   const handleGetTables = async () => {
     try {
       if (process.env.NEXT_PUBLIC_GRADER_API_URL) {
-        const response = await axios.post(
+        const response = await axios.get(
           `${process.env.NEXT_PUBLIC_GRADER_API_URL}/api/get`
         );
         const result = response.data.result || []
@@ -131,6 +131,7 @@ export default function Page() {
             Swal.fire("Error", "No Grader Found!", "error");
           }
         } catch (error) {
+          console.log("AAA")
           Swal.fire("Error", "Failed to execute query", "error");
         }
       }

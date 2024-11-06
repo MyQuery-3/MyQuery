@@ -5,20 +5,26 @@ from .routers import router
 
 app = FastAPI()
 
-# CORS settings
-origins = [
-    "http://localhost:3000",
-    "http://localhost:8787",
-]
-
-# Middleware สำหรับ CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=['*']
 )
+
+
+# # CORS settings
+# origins = [
+#     "http://localhost:3000",
+#     "http://localhost:8787",
+# ]
+
+# # Middleware สำหรับ CORS
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=["*"],
+#     allow_credentials=True,
+#     allow_methods=["*"],
+#     allow_headers=["*"],
+# )
 
 # รวม router เข้ากับแอป
 app.include_router(router)

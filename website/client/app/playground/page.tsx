@@ -19,6 +19,7 @@ export default function Page() {
   const [result, setResult] = useState<any[]>([]);
   const [columns, setColumns] = useState<TableColumn<any>[]>([]);
   const [tables, setTables] = useState([])
+  const [errM, setErrM] = useState('');
   const editorRef = useRef<CustomEditorProps>();
 
   useEffect(() => {
@@ -127,12 +128,14 @@ export default function Page() {
             }
 
             Swal.fire("Success", "Queries executed successfully!", "success");
+            setErrM('')
           } else {
-            Swal.fire("Error", "No Grader Found!", "error");
+            Swal.fire("Error", 'No Grader Found! ', "error");
           }
         } catch (error) {
-          console.log("AAA")
-          Swal.fire("Error", "Failed to execute query", "error");
+          var err = error as any
+          Swal.fire("Error", "Failed to execute query\n" + (err.response?.data?.detail || err.message), "error");
+          setErrM(err.response?.data?.detail || err.message)
         }
       }
     });
@@ -141,14 +144,14 @@ export default function Page() {
 
   return (
     <div className="flex justify-center items-center mt-24 px-4 flex-wrap">
-      <div className="max-w-6xl p-4 w-full">
+      <div className="grid max-w-6xl p-4 w-full">
         <h1 className="text-3xl font-bold mb-4 flex gap-2 items-center">
           <Box size={"1.5em"} />
           SQL Query Playground
         </h1>
-        <div className="flex space-x-3">
+        <div className="grid grid-flow-col space-x-3 w-full">
           <div className="bg-card w-full border border-border rounded-lg hover:border-primary mb-4 p-4">
-            <div className="overflow-hidden rounded-lg h-[500px]">
+            <div className="overflow-hidden rounded-lg h-[500px] ">
               <Editor
                 className="h-[500px]"
                 defaultLanguage="sql"
@@ -159,7 +162,7 @@ export default function Page() {
               />
             </div>
           </div>
-          <div>
+          <div className="max-[1150px]:hidden w-full">
             <p className="flex font-bold text-xl"><Table />  Gobal Query</p>
             <div className="grid h-[600px] w-[300px] border border-border hover:border-primary rounded-md p-3 space-x-1 space-y-1 overflow-scroll overflow-x-hidden">
               {tables.map((table, index) => (
@@ -170,8 +173,10 @@ export default function Page() {
               ))}
             </div>
           </div>
-
         </div>
+        <div className="my-2 w-full bg-border">
+          {errM}
+          </div>
         <div className="flex flex-row space-x-3">
           <button
             onClick={handleQuery}

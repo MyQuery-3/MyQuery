@@ -22,23 +22,52 @@ def cleanup_expired_tables():
     try:
         current_time = datetime.now()
         with engine_expire.connect() as expire_connection:
-            expired_tables = expire_connection.execute(
-                text("SELECT db_name FROM database_store WHERE expire <= :current_time"),
-                {"current_time": current_time}
+            # ดึงรายการตารางจาก database_store ทั้งหมด
+            all_tables = expire_connection.execute(
+                text("SELECT db_name, expire FROM database_store")
             ).mappings().fetchall()
 
-            for row in expired_tables:
+            for row in all_tables:
                 table_name = row['db_name']
-                print(f"Deleting expired table: {table_name}")
 
-                # ลบตารางจาก engine และลบข้อมูลจาก database_store แบบ atomic
-                with engine.begin() as connection:
-                    connection.execute(text(f"DROP TABLE IF EXISTS {table_name}"))
+                # แปลง expire จาก string เป็น datetime
+                try:
+                    expire_date = row['expire'] if isinstance(row['expire'], datetime) else datetime.strptime(row['expire'], '%Y-%m-%d %H:%M:%S.%f')
+                except ValueError:
+                    print(f"Invalid date format for table {table_name}: {row['expire']}")
+                    continue
+
+                print(f"Checking table: {table_name} with expire date: {expire_date}")
+
+                # ตรวจสอบว่า table หมดอายุหรือไม่
+                if expire_date <= current_time:
+                    print(f"Table {table_name} has expired. Proceeding with deletion.")
+
+                    # ลบตารางจาก engine (ถ้ามีอยู่) และลบข้อมูลจาก database_store
+                    with engine.connect() as main_connection:
+                        main_connection.execute(text(f"DROP TABLE IF EXISTS {table_name}"))
+
                     expire_connection.execute(
                         text("DELETE FROM database_store WHERE db_name = :db_name"),
                         {"db_name": table_name}
                     )
-                    connection.commit()
+                    expire_connection.commit()
+                else:
+                    # ตรวจสอบว่า table ยังมีอยู่ใน engine หรือไม่
+                    with engine.connect() as main_connection:
+                        table_exists = main_connection.execute(
+                            text("SELECT name FROM sqlite_master WHERE type='table' AND name = :table_name"),
+                            {"table_name": table_name}
+                        ).scalar()
+
+                        # ถ้าตารางไม่มีใน engine แล้วให้ลบจาก database_store
+                        if not table_exists:
+                            print(f"Table {table_name} not found in engine. Removing from database_store.")
+                            expire_connection.execute(
+                                text("DELETE FROM database_store WHERE db_name = :db_name"),
+                                {"db_name": table_name}
+                            )
+                            expire_connection.commit()
     except SQLAlchemyError as e:
         print(f"SQL Error in cleanup: {str(e)}")
 

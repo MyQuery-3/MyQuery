@@ -3,10 +3,12 @@
 import { useState, useRef, useEffect, useContext } from "react";
 import { themeContext } from "../provider/themeProvider";
 import Editor, { OnMount } from "@monaco-editor/react";
-import { Box, Database, Play, RefreshCw, Table } from "lucide-react";
+import { Box, Database, Download, Play, RefreshCw, Table } from "lucide-react";
 import axios from "axios";
 import DataTable, { TableColumn } from "react-data-table-component";
 import Swal, { SweetAlertOptions } from "sweetalert2";
+
+import * as XLSX from "xlsx";
 
 interface CustomEditorProps {
   getValue: () => string;
@@ -18,7 +20,7 @@ export default function Page() {
   const [vsTheme, setVsTheme] = useState("vs-dark");
   const [result, setResult] = useState<any[]>([]);
   const [columns, setColumns] = useState<TableColumn<any>[]>([]);
-  const [tables, setTables] = useState([])
+  const [tables, setTables] = useState<[string, string][]>([]);
   const [errM, setErrM] = useState('');
   const editorRef = useRef<CustomEditorProps>();
 
@@ -46,24 +48,17 @@ export default function Page() {
           { dbName: dbName }
         );
         const result = response.data.result || [];
-
-        // ตรวจสอบผลลัพธ์และอัพเดตสถานะหากข้อมูลพร้อมแสดงผล
-        if (response.data.result && !response.data.result.message) {
-          const selectResults = Array.isArray(result) ? result : [];
-
-          if (selectResults.length > 0) {
-            setResult(selectResults);
-            setColumns(
-              Object.keys(selectResults[0] || {}).map((key) => ({
-                name: key.charAt(0).toUpperCase() + key.slice(1),
-                selector: (row) => row[key],
-              }))
-            );
-          } else {
-            console.log("No data available in the selected table.");
-          }
+        
+        if (Array.isArray(result) && result.length > 0) {
+          setResult(result);
+          setColumns(
+            Object.keys(result[0] || {}).map((key) => ({
+              name: key.charAt(0).toUpperCase() + key.slice(1),
+              selector: (row) => row[key],
+            }))
+          );
         } else {
-          console.log("Failed to retrieve data from database.");
+          console.log("No data available in the selected table.");
         }
       }
     } catch (error) {
@@ -77,25 +72,25 @@ export default function Page() {
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_GRADER_API_URL}/api/get`
         );
-        const result = response.data.result || []
-        if (response.data.result && !response.data.result.message) {
-          const tableNames = result.map((data: { name: any; }) => data.name);
-          setTables(tableNames);
+        const result = response.data.result || [];
+
+        if (Array.isArray(result)) {
+          const tableData: [string, string][] = result.map((data: { name: string; expire: string }) => [
+            data.name,
+            data.expire ? new Date(data.expire).toLocaleDateString() +" "+ new Date(data.expire).toLocaleTimeString() : "No Expiration"
+          ]);
+          setTables(tableData);
         }
       }
     } catch (e) {
-      console.error("Fail get tables : ", e)
+      console.error("Fail get tables:", e);
     }
-  }
+  };
 
-  // Handle SQL query
   const handleQuery = async () => {
     const query = getIDEValue();
+    const queries = query.split(";").map((q) => q.trim()).filter((q) => q);
 
-    // แยกคำสั่ง SQL แต่ละคำสั่งโดยใช้เครื่องหมาย ';'
-    const queries = query.split(';').map(q => q.trim()).filter(q => q);
-
-    // แสดงข้อความยืนยันก่อนเริ่ม query
     await Swal.fire({
       title: "Execute Query?",
       text: "Are you sure you want to run this SQL query?",
@@ -116,7 +111,7 @@ export default function Page() {
               results.push(response.data.result);
             }
 
-            const selectResults = results.find(result => Array.isArray(result));
+            const selectResults = results.find((result) => Array.isArray(result));
             if (selectResults) {
               setResult(selectResults);
               setColumns(
@@ -128,18 +123,30 @@ export default function Page() {
             }
 
             Swal.fire("Success", "Queries executed successfully!", "success");
-            setErrM('')
+            setErrM("");
           } else {
-            Swal.fire("Error", 'No Grader Found! ', "error");
+            Swal.fire("Error", "No Grader Found!", "error");
           }
         } catch (error) {
-          var err = error as any
+          const err = error as any;
           Swal.fire("Error", "Failed to execute query\n" + (err.response?.data?.detail || err.message), "error");
-          setErrM(err.response?.data?.detail || err.message)
+          setErrM(err.response?.data?.detail || err.message);
         }
       }
     });
     await handleGetTables();
+  };
+
+  const handleDownloadExcel = () => {
+    if (result  && result.length > 0) {
+      const worksheet = XLSX.utils.json_to_sheet(result);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
+      XLSX.writeFile(workbook, Date.now()+".xlsx");
+      Swal.fire("Success" , "Download to Exel Complete", "success")
+    } else {
+      Swal.fire("No data to download", undefined , "error")
+    }
   };
 
   return (
@@ -166,9 +173,10 @@ export default function Page() {
             <p className="flex font-bold text-xl"><Table />  Gobal Query</p>
             <div className="grid h-[600px] w-[300px] border border-border hover:border-primary rounded-md p-3 space-x-1 space-y-1 overflow-scroll overflow-x-hidden">
               {tables.map((table, index) => (
-                <button key={index} onClick={() => handleSelectDB(table)} className="flex flex-col border border-border justify-center items-center rounded-sm min-h-[70px] w-full hover:text-secondary hover:bg-primary">
+                <button key={index} onClick={() => handleSelectDB(table[0])} className="flex flex-col border border-border justify-center items-center rounded-sm min-h-[70px] w-full hover:text-secondary hover:bg-primary">
                   <Database />
-                  <p className="truncate w-[200px] overflow-hidden whitespace-nowrap text-ellipsis text-center">{table}</p>
+                  <p className="truncate w-[200px] overflow-hidden whitespace-nowrap text-ellipsis text-center">{table[0]}</p>
+                  <p className="truncate w-[200px] overflow-hidden whitespace-nowrap text-ellipsis text-center text-destructive">{table[1]}</p>
                 </button>
               ))}
             </div>
@@ -176,7 +184,7 @@ export default function Page() {
         </div>
         <div className="my-2 w-full bg-border">
           {errM}
-          </div>
+        </div>
         <div className="flex flex-row space-x-3">
           <button
             onClick={handleQuery}
@@ -198,6 +206,14 @@ export default function Page() {
             pagination
             highlightOnHover
           />
+        </div>
+        <div className="my-3">
+          <button
+            onClick={handleDownloadExcel}
+            className="flex items-center gap-2 bg-primary py-2 px-4 rounded-md font-bold text-lg hover:scale-95 transition"
+          >
+            <Download /> Download Excel
+          </button>
         </div>
       </div>
     </div>

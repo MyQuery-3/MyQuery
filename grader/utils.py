@@ -38,6 +38,7 @@ def cleanup_expired_tables():
                         text("DELETE FROM database_store WHERE db_name = :db_name"),
                         {"db_name": table_name}
                     )
+                    connection.commit()
     except SQLAlchemyError as e:
         print(f"SQL Error in cleanup: {str(e)}")
 
@@ -69,6 +70,7 @@ def execute_query(query: str):
             with engine_expire.connect() as expire_connection:
                 expire_query = text("INSERT INTO database_store (db_name, expire) VALUES (:db_name, :expire)")
                 expire_connection.execute(expire_query, {"db_name": table_name, "expire": expire_date})
+                expire_connection.commit()
                 print(f"Inserting table: {table_name} with expire date: {expire_date}")
         except SQLAlchemyError as e:
             print(f"SQL Error in database_store insertion: {str(e)}")
